@@ -1,4 +1,4 @@
-/* Copyright (C) Universitat Politècnica de Catalunya, Barcelona, Spain.
+/* Copyright (C) Universitat Politï¿½cnica de Catalunya, Barcelona, Spain.
  *
  * Permission to copy, use, modify, sell and distribute this software
  * is granted provided this copyright notice appears in all copies.
@@ -55,6 +55,7 @@ namespace upc {
   public:
     ///Default contructor
     GMM() {nmix = 0; vector_size=0;}
+    //nmix es cuantas gaussianas forman la mezcla
 
     ///Define num. of mixtures and size of input samples (num. param.)
     ///The new gmm includes the old values and zeros, for the new ones
