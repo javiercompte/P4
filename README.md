@@ -130,10 +130,13 @@ ejercicios indicados.
 
 - Usando el programa <code>pearson</code>, obtenga los coeficientes de correlación normalizada entre los
   parámetros 2 y 3 para un locutor, y rellene la tabla siguiente con los valores obtenidos.
+  
+  <img width="503" alt="image" src="https://user-images.githubusercontent.com/101046951/170028447-fe87631a-c824-4d5f-940d-181326454dd9.png">
+
 
   |                        | LP   | LPCC | MFCC |
   |------------------------|:----:|:----:|:----:|
-  | &rho;<sub>x</sub>[2,3] |      |      |      |
+  | &rho;<sub>x</sub>[2,3] |   -0,818326   |   0,181637   |   0,0810048   |
   
   + Compare los resultados de <code>pearson</code> con los obtenidos gráficamente.
   
