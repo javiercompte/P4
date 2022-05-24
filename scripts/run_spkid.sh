@@ -17,14 +17,14 @@ w=work
 name_exp=one
 db_devel=spk_8mu/speecon
 db_final=spk_8mu/sr_test
-world = users
+world=users
 # con world entrenamos el modelo del mundo, hemos puesto user pero tambien puede ser others o users_and_others (ls lists/verif/)
 # OBJETIVOS
 # menos 0.5 % en clasificacios
 # coste por debajo del 5
 
-WORLD_OPTS = "-T 1.e-6 -N10 -m 5"
-TRAIN_OPTS = "-T 1.e-6 -N10 -m 5"
+WORLD_OPTS="-T 1.e-6 -N10 -m 5"
+TRAIN_OPTS="-T 1.e-6 -N10 -m 5"
 
 # ------------------------
 # Usage
@@ -68,7 +68,7 @@ if [[ -z "$w" ]]; then echo "Edit this script and set variable 'w'"; exit 1; fi
 mkdir -p $w  #Create directory if it does not exists
 if [[ $? -ne 0 ]]; then echo "Error creating directory $w"; exit 1; fi
 
-if [[ ! -d "$_devel" ]]; then
+if [[ ! -d "$db_devel" ]]; then
    echo "Edit this script and set variable 'db' to speecon db"
    exit 1
 fi
@@ -103,7 +103,7 @@ compute_lp() {
 }
 
 compute_lpcc(){
-    db = $1
+    db=$1
     shift
     for filename in $(sort $*); do
         mkdir -p `dirname $w/$FEAT/$filename.$FEAT`
@@ -202,7 +202,7 @@ for cmd in $*; do
 	   # Perform the final test on the speaker classification of the files in spk_ima/sr_test/spk_cls.
 	   # The list of users is the same as for the classification task. The list of files to be
 	   # recognized is lists/final/class.test
-       compute_FEAT $db_final $lists/final/class.test
+       compute_$FEAT $db_final $lists/final/class.test
        (gmm_classify -d $w/$FEAT -e $FEAT -D $w/gmm/$FEAT -E gmm $lists/gmm.list  $lists/final/class.test | tee class_test.log) || exit 1
        # echo "To be implemented ..."
    
@@ -213,8 +213,8 @@ for cmd in $*; do
 	   # The list of legitimate users is lists/final/verif.users, the list of files to be verified
 	   # is lists/final/verif.test, and the list of users claimed by the test files is
 	   # lists/final/verif.test.candidates
-       compute_FEAT $db_final $lists/final/verif.test
-       gmm_verify -d $w/$FEAT -e $FEAT -D $w/gmm/$FEAT -E gmm -w $world lists/final/verif.users lists/final/verif.test lists/final/verif.test.candidates | tee verif_test.log
+       compute_$FEAT $db_final $lists/final/verif.test
+       gmm_verify -d $w/$FEAT -e $FEAT -D $w/gmm/$FEAT -E gmm -w $world lists/final/verif.users lists/final/verif.test lists/final/verif.test.candidates | tee $w/verif_test.log
        perl -ane 'print "$F[0]\t$F[1]\t";
             if ($F[2] > 0.9748) {print "1\n"}
             else {print "0\n"}' $w/verif_test.log | tee verif_test.log

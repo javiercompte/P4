@@ -14,7 +14,7 @@ cleanup() {
    \rm -f $base.*
 }
 
-if [[ $# != 3 ]]; then
+if [[ $# != 4 ]]; then
    echo "$0 lpc_order lpcc_order input.wav output.lp"
    exit 1
 fi
