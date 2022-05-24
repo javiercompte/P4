@@ -32,12 +32,51 @@ ejercicios indicados.
 - Analice el script `wav2lp.sh` y explique la misión de los distintos comandos involucrados en el *pipeline*
   principal (`sox`, `$X2X`, `$FRAME`, `$WINDOW` y `$LPC`). Explique el significado de cada una de las 
   opciones empleadas y de sus valores.
+  
+  **SOX:** Permite realizar la conversión de una señal de entrada sin cabecera a una del formato adecuado. Para la conversión se puede elegir cualquier formato de la señal de entrada y los bits utilizados entre otras cosas. Por ejemplo: sox, permite la conversión de una señal de entrada a reales en coma flotante de 32 bits con o sin cabecera. Además sox también permite la conversión de señales guardadas en un programa externo, para ello, solo hay que poner el URL de dicha señal, como señal de entrada.
+  
+  **X2X:** Es el programa de SPTK que permite la conversión entre distintos formatos de datos, tal como se puede observar en la siguiente imagen, permite bastantes tipos de conversión, desde convertir a un formato de caracteres, hasta un unsigned long long de 8 bytes. En el caso de convertir a valores numéricos, hay que especificar hasta dónde se quiere que se redondean los valores de salida.
+  
+  ![image](https://user-images.githubusercontent.com/100692200/169974160-91510516-64c0-4a5a-a6ad-f621bf69c0fa.png)
+
+  **FRAME:** Divide la señal de entrada en tramas de “l” muestras con desplazamiento de ventana de periodo “p” muestras que se le indiquen y también puede elegir si el punto de comienzo es centrado o no. El valor máximo de “l” es de 256 y el de “p” es de 100. Un ejemplo sería poner: sptk frame -l 200 -p 40. En este caso le estamos pidiendo que nos divida la señal en tramas de 200 muestras, con un desplazamiento de 40 muestras.
+  
+  ![image](https://user-images.githubusercontent.com/100692200/169975611-bee4fba3-c85d-44fc-8ae8-d5a35b16fd50.png)
+
+  
+  **WINDOW:** Multiplica cada trama por una ventana. Se puede elegir el número “l” de muestras por trama del fichero de entrada y “L” de muestras por trama del fichero de salida, ambos solo pueden ser como mucho de 256, el tipo de normalización (si no tiene normalización, si tiene normalización power o magnitude) y el tipo de ventana que se desea utilizar, pudiendo escoger entre 6 opciones distintas de ventana, siendo las 6 ventanas más utilizadas. El tipo de dato de entrada y de salida ha de ser de tipo float.
+  
+  ![image](https://user-images.githubusercontent.com/100692200/169975216-fe943316-f3ff-48b6-83a2-59649133da53.png)
+  
+  **LPC:** Realiza un análisis de la señal, usando el método de Levinson-Durbin. Calcula los lpc_order de orden “m” (siendo como mucho 25) de los primeros coeficientes de predicción lineal, precedidos por el factor de ganancia del predictor. Se puede escoger el número “l” de muestras por trama (siendo como mucho 256) y el valor mínimo del determinante de la matriz normal (siendo como mucho 10^-6). Tanto la señal de entrada como la señal de salida tienen un formato float.
+  
+  ![image](https://user-images.githubusercontent.com/100692200/169975505-2901d835-1d2d-41d2-9390-86f8fd8c776f.png)
+
+
 
 - Explique el procedimiento seguido para obtener un fichero de formato *fmatrix* a partir de los ficheros de
   salida de SPTK (líneas 45 a 47 del script `wav2lp.sh`).
+  
+  ![image](https://user-images.githubusercontent.com/100692200/169977226-fcc8d6cb-f1a4-4adc-a1a5-bc4ebc7b8904.png)
+  
+  EL procedimiento para obtener un fichero fmatrix es el detallado a continuación:
+  1. Mediante el comando sox pasamos de .wav a una señal signed int de 16 bits, sin cabecera ni ningún formato adicional.
+  2. Con el comando X2X convertimos los datos de formato short a float.
+  3. Aplicando FRAME dividimos la señal en tramas de 240 muestras con un desplazamiento de ventana de 80 muestras.
+  4. Hacemos WINDOW para enventanar la señal con una ventana Blackman con 240 muestras de entrada y de salida. 
+  5. Con el comando LPC realizamos el cálculo de los ‘lpc_order’ de los primeros coeficientes de predicción lineal con el método de Levison-Durbin pasados por el parámetro -m y con un frame -l de 240 muestras. 
+  6. Una vez finalizado el proceso ponemos un comando ‘>$base.lp’ para redireccionar la salida al fichero $base.lp.
+  7. Una vez procesada la señal y guardada en un fichero, procedemos a calcular el número de columnas y el número de filas. 
+  8. Para ello, sabiendo que en primer elemento del vector de predicción se almacena la ganancia del predictor, calculamos las columnas sumando uno al orden del predictor. 
+  9. Teniendo en cuenta que queremos que en cada fila se almacene cada trama de la señal y cada columna para cada uno de los coeficientes con los que se parametriza la trama. Para realizar el cálculo del número de filas hemos de tener en cuenta la longitud de la señal y la longitud y desplazamiento de la ventana aplicada. Por eso, primero con el comando sox realizamos la conversión de datos del tipo float al tipo ascii. Y a continuación, contamos las líneas con el comando wc-1. 
+  10. Finalmente, ya tenemos creada la matriz, y la imprimimos.
+ 
 
   * ¿Por qué es conveniente usar este formato (u otro parecido)? Tenga en cuenta cuál es el formato de
     entrada y cuál es el de resultado.
+    
+    Se usa este formato, porque para poder identificar correctamente los coeficientes por trama, la matriz nos es muy útil. Y el fichero fmatrix lo utilizamos, porque en este fichero se realiza la parametrización de una señal de voz usando coeficientes de predicción lineal, en el que hay que poner el número de filas y de columnas, seguidos por los datos. Los datos se almacenan en nrow filas de ncol columnas, en los que cada fila corresponde a una trama de señal, y cada columna a cada uno de los coeficientes con los se parametriza la trama. Así tenemos todos coeficientes de la señal a analizar en las diferenes columnas y podemos mostrarlos con el programas fmatrix_show y elegir los coeficientes 2 y 3, que son los que nos piden, con fmatrix_cut. Es decir, este formato, nos facilita trabajar de forma más eficiente con los datos.
+    
 
 - Escriba el *pipeline* principal usado para calcular los coeficientes cepstrales de predicción lineal
   (LPCC) en su fichero <code>scripts/wav2lpcc.sh</code>:
