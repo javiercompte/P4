@@ -95,9 +95,38 @@ ejercicios indicados.
 - Inserte una imagen mostrando la dependencia entre los coeficientes 2 y 3 de las tres parametrizaciones
   para todas las señales de un locutor.
   
+  ![image](https://user-images.githubusercontent.com/100692200/170026247-cae66a34-05b7-4b53-80ef-02275c5f3ebe.png)
+
+  ![image](https://user-images.githubusercontent.com/100692200/170023320-0a8c9b03-1c0b-47c9-9dc5-3b6926baf116.png)
+  
+  ![image](https://user-images.githubusercontent.com/100692200/170025250-17b78bad-672e-4205-8afa-6e1059f72a84.png)
+
+
+  
   + Indique **todas** las órdenes necesarias para obtener las gráficas a partir de las señales 
     parametrizadas.
+    
+    `FEAT=lp run_spkid lp train`
+    
+    `fmatrix_show -H work/lp/BLOCK00/SES000/*.lp | cut -f3,4 | tr . , > lp_2_3.txt`
+    
+    Hacemos la gráfica
+    
+    `FEAT=lpcc run_spkid lpcc train`
+    
+    `fmatrix_show -H work/lpcc/BLOCK00/SES000/*.lpcc | cut -f3,4 | tr . , > lpcc_2_3.txt`
+    
+    Hacemos la gráfica
+    
+    `FEAT=lp run_spkid lp train`
+    
+    `fmatrix_show -H work/mfcc/BLOCK00/SES000/*.mfcc | cut -f3,4 | tr . , > mfcc_2_3.txt`
+    
+    Hacemos la gráfica
+    
   + ¿Cuál de ellas le parece que contiene más información?
+    
+    Nos parece que usando la parametrización LP obtenemos más información.
 
 - Usando el programa <code>pearson</code>, obtenga los coeficientes de correlación normalizada entre los
   parámetros 2 y 3 para un locutor, y rellene la tabla siguiente con los valores obtenidos.
