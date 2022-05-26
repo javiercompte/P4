@@ -7,6 +7,7 @@
 
 ## @file
 # \TODO
+# \HECHO
 # Set the proper value to variables: lists, w, name_exp and db
 # - lists:    directory with the list of signal files
 # - w:        a working directory for temporary files
@@ -23,8 +24,8 @@ world=users
 # menos 0.5 % en clasificacios
 # coste por debajo del 5
 
-WORLD_OPTS="-T 1.e-6 -N10 -m 5"
-TRAIN_OPTS="-T 1.e-6 -N10 -m 5"
+WORLD_OPTS="-T 1.e-6 -N50 -m 20"
+TRAIN_OPTS="-T 1.e-6 -N50 -m 20"
 
 # ------------------------
 # Usage
@@ -91,13 +92,16 @@ fi
 
 ## @file
 # \TODO
+# \HECHO
 # Create your own features with the name compute_$FEAT(), where $FEAT is the name of the feature.
 # - Select (or change) different features, options, etc. Make you best choice and try several options.
 
 compute_lp() {
-    for filename in $(sort $lists/class/all.train $lists/class/all.test); do
+    db=$1
+    shift
+    for filename in $(sort $*); do
         mkdir -p `dirname $w/$FEAT/$filename.$FEAT`
-        EXEC="wav2lp 8 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
+        EXEC="wav2lp 30 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
         echo $EXEC && $EXEC || exit 1
     done
 }
@@ -107,15 +111,17 @@ compute_lpcc(){
     shift
     for filename in $(sort $*); do
         mkdir -p `dirname $w/$FEAT/$filename.$FEAT`
-        EXEC="wav2lpcc 15 8 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
+        EXEC="wav2lpcc 30 16 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
         echo $EXEC && $EXEC || exit 1
     done
 }
 
 compute_mfcc(){
-    for filename in $(sort $lists/class/all.train $lists/class/all.test); do
+    db=$1
+    shift
+    for filename in $(sort $*); do
         mkdir -p `dirname $w/$FEAT/$filename.$FEAT`
-        EXEC="wav2mfcc 8 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
+        EXEC="wav2mfcc 15 $db/$filename.wav $w/$FEAT/$filename.$FEAT"
         echo $EXEC && $EXEC || exit 1
     done
 }
@@ -144,6 +150,7 @@ for cmd in $*; do
    if [[ $cmd == train ]]; then
        ## @file
 	   # \TODO
+       # \HECHO
 	   # Select (or change) good parameters for gmm_train
        for dir in $db_devel/BLOCK*/SES* ; do
            name=${dir/*\/}
@@ -168,6 +175,7 @@ for cmd in $*; do
    elif [[ $cmd == trainworld ]]; then
        ## @file
 	   # \TODO
+       # \HECHO
 	   # Implement 'trainworld' in order to get a Universal Background Model for speaker verification
 	   #
 	   # - The name of the world model will be used by gmm_verify in the 'verify' command below.
@@ -178,6 +186,7 @@ for cmd in $*; do
    elif [[ $cmd == verify ]]; then
        ## @file
 	   # \TODO 
+       # \HECHO
 	   # Implement 'verify' in order to perform speaker verification
 	   #
 	   # - The standard output of gmm_verify must be redirected to file $w/verif_${FEAT}_${name_exp}.log.
@@ -199,6 +208,7 @@ for cmd in $*; do
    elif [[ $cmd == finalclass ]]; then
        ## @file
 	   # \TODO
+       # \HECHO
 	   # Perform the final test on the speaker classification of the files in spk_ima/sr_test/spk_cls.
 	   # The list of users is the same as for the classification task. The list of files to be
 	   # recognized is lists/final/class.test
@@ -209,6 +219,7 @@ for cmd in $*; do
    elif [[ $cmd == finalverif ]]; then
        ## @file
 	   # \TODO
+       # \HECHO
 	   # Perform the final test on the speaker verification of the files in spk_ima/sr_test/spk_ver.
 	   # The list of legitimate users is lists/final/verif.users, the list of files to be verified
 	   # is lists/final/verif.test, and the list of users claimed by the test files is
