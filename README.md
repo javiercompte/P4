@@ -80,25 +80,63 @@ ejercicios indicados.
 
 - Escriba el *pipeline* principal usado para calcular los coeficientes cepstrales de predicción lineal
   (LPCC) en su fichero <code>scripts/wav2lpcc.sh</code>:
+  
+  <img width="573" alt="image" src="https://user-images.githubusercontent.com/101046951/170018269-b430d8b3-40f0-4f26-8200-dd24131dfc0f.png">
+
 
 - Escriba el *pipeline* principal usado para calcular los coeficientes cepstrales en escala Mel (MFCC) en su
   fichero <code>scripts/wav2mfcc.sh</code>:
+  
+  <img width="574" alt="image" src="https://user-images.githubusercontent.com/101046951/170018355-1c7877fb-e3b6-4329-9b00-17d684a958d9.png">
+
 
 ### Extracción de características.
 
 - Inserte una imagen mostrando la dependencia entre los coeficientes 2 y 3 de las tres parametrizaciones
   para todas las señales de un locutor.
   
+  ![image](https://user-images.githubusercontent.com/100692200/170026247-cae66a34-05b7-4b53-80ef-02275c5f3ebe.png)
+
+  ![image](https://user-images.githubusercontent.com/100692200/170023320-0a8c9b03-1c0b-47c9-9dc5-3b6926baf116.png)
+  
+  ![image](https://user-images.githubusercontent.com/100692200/170025250-17b78bad-672e-4205-8afa-6e1059f72a84.png)
+
+
+  
   + Indique **todas** las órdenes necesarias para obtener las gráficas a partir de las señales 
     parametrizadas.
+    
+    `FEAT=lp run_spkid lp train`
+    
+    `fmatrix_show -H work/lp/BLOCK00/SES000/*.lp | cut -f3,4 | tr . , > lp_2_3.txt`
+    
+    Hacemos la gráfica
+    
+    `FEAT=lpcc run_spkid lpcc train`
+    
+    `fmatrix_show -H work/lpcc/BLOCK00/SES000/*.lpcc | cut -f3,4 | tr . , > lpcc_2_3.txt`
+    
+    Hacemos la gráfica
+    
+    `FEAT=lp run_spkid lp train`
+    
+    `fmatrix_show -H work/mfcc/BLOCK00/SES000/*.mfcc | cut -f3,4 | tr . , > mfcc_2_3.txt`
+    
+    Hacemos la gráfica
+    
   + ¿Cuál de ellas le parece que contiene más información?
+    
+    Nos parece que usando la parametrización LP obtenemos más información.
 
 - Usando el programa <code>pearson</code>, obtenga los coeficientes de correlación normalizada entre los
   parámetros 2 y 3 para un locutor, y rellene la tabla siguiente con los valores obtenidos.
+  
+  <img width="503" alt="image" src="https://user-images.githubusercontent.com/101046951/170028447-fe87631a-c824-4d5f-940d-181326454dd9.png">
+
 
   |                        | LP   | LPCC | MFCC |
   |------------------------|:----:|:----:|:----:|
-  | &rho;<sub>x</sub>[2,3] |      |      |      |
+  | &rho;<sub>x</sub>[2,3] |   -0,818326   |   0,181637   |   0,0810048   |
   
   + Compare los resultados de <code>pearson</code> con los obtenidos gráficamente.
   
