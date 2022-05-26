@@ -24,8 +24,8 @@ world=users
 # menos 0.5 % en clasificacios
 # coste por debajo del 5
 
-WORLD_OPTS="-T 1.e-6 -N50 -m 20"
-TRAIN_OPTS="-T 1.e-6 -N50 -m 20"
+WORLD_OPTS="-T 1.e-6 -N70 -m 25"
+TRAIN_OPTS="-T 1.e-6 -N70 -m 25"
 
 # ------------------------
 # Usage
@@ -155,7 +155,7 @@ for cmd in $*; do
        for dir in $db_devel/BLOCK*/SES* ; do
            name=${dir/*\/}
            echo $name ----
-           gmm_train  -v 1 $TRAIN_OPTS -d $w/$FEAT -e $FEAT -g $w/gmm/$FEAT/$name.gmm $lists/class/$name.train || exit 1
+           gmm_train  -v 1 $TRAIN_OPTS -d $w/$FEAT -e $FEAT -i 1 -g $w/gmm/$FEAT/$name.gmm $lists/class/$name.train || exit 1
            echo
        done
    elif [[ $cmd == test ]]; then
@@ -179,7 +179,7 @@ for cmd in $*; do
 	   # Implement 'trainworld' in order to get a Universal Background Model for speaker verification
 	   #
 	   # - The name of the world model will be used by gmm_verify in the 'verify' command below.
-       gmm_train  -v 1 $WORLD_OPTS -d $w/$FEAT -e $FEAT -g $w/gmm/$FEAT/$world.gmm $lists/verif/$world.train || exit 1
+       gmm_train  -v 1 $WORLD_OPTS -d $w/$FEAT -e $FEAT -g -i 1 $w/gmm/$FEAT/$world.gmm $lists/verif/$world.train || exit 1
        #echo "Implement the trainworld option ..."
        # CAMBIAR EL UMBRAL -T
        # numero de gausianas -m 2 --> mejor aumentarlo, dos es muy poco
@@ -227,10 +227,11 @@ for cmd in $*; do
        compute_$FEAT $db_final $lists/final/verif.test
        gmm_verify -d $w/$FEAT -e $FEAT -D $w/gmm/$FEAT -E gmm -w $world lists/final/verif.users lists/final/verif.test lists/final/verif.test.candidates | tee $w/verif_test.log
        perl -ane 'print "$F[0]\t$F[1]\t";
-            if ($F[2] > 0.9748) {print "1\n"}
+            if ($F[2] > 1.6950282010613) {print "1\n"}
             else {print "0\n"}' $w/verif_test.log | tee verif_test.log
        #echo "To be implemented ..."
        # 3.214 es un nuemor random --> poner el numero q minimice el coste desarrollo 0.97
+       # 1.6950282010613
    
    # If the command is not recognize, check if it is the name
    # of a feature and a compute_$FEAT function exists.
