@@ -126,7 +126,7 @@ ejercicios indicados.
     
   + ¿Cuál de ellas le parece que contiene más información?
     
-    Nos parece que usando la parametrización LP obtenemos más información.
+    Nos parece que usando la parametrización LP obtenemos más información porque al estar más concentrados los puntos, están más correlados.
 
 - Usando el programa <code>pearson</code>, obtenga los coeficientes de correlación normalizada entre los
   parámetros 2 y 3 para un locutor, y rellene la tabla siguiente con los valores obtenidos.
@@ -141,6 +141,9 @@ ejercicios indicados.
   + Compare los resultados de <code>pearson</code> con los obtenidos gráficamente.
   
 - Según la teoría, ¿qué parámetros considera adecuados para el cálculo de los coeficientes LPCC y MFCC?
+
+LPCC: se suele usar entre 8 y 12 coeficientes de predicción, y 3/2 de ese numero para el número de coeficientes cepstrales.
+MFCC: se suele usar entre 14 y 18 coeficientes y un banco de 24 a 40 filtros paso-banda en escala Mel.
 
 ### Entrenamiento y visualización de los GMM.
 
